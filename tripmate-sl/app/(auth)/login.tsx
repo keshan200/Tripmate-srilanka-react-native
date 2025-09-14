@@ -27,7 +27,8 @@ const Login = () => {
     await login(email, password)
       .then((res) => {
         console.log(res)
-        Alert.alert("Login Sucess")
+        router.push("/home")
+
       })
       .catch((err) => {
         console.error(err)
@@ -91,7 +92,7 @@ const Login = () => {
                   placeholder="your.email@gmail.com"
                   className="bg-white border-2 border-orange-200 rounded-2xl px-12 py-4 text-gray-900 shadow-sm focus:border-orange-400"
                   placeholderTextColor="#9CA3AF"
-                  value={email}
+                  value={email} 
                   onChangeText={setEmail}
                   keyboardType="email-address"
                   autoCapitalize="none"
@@ -176,9 +177,9 @@ const Login = () => {
           <View className="items-center mt-8">
             <View className="flex-row bg-white/60 px-6 py-3 rounded-full">
               <Text className="text-gray-700">New to Sri Lanka? </Text>
-              <Pressable >
-                <Text className="text-orange-600 font-bold">Join Adventure</Text>
-              </Pressable>
+               <Pressable onPress={() => router.push("/(auth)/register")}>
+                   <Text className="text-orange-600 font-bold">Join Adventure</Text>
+               </Pressable>
             </View>
           </View>
 
