@@ -8,6 +8,7 @@ import {
 } from "react-native"
 import React, { useState } from "react"
 import { Ionicons } from '@expo/vector-icons'
+import { router } from "expo-router"
 
 const Dashboard = () => {
   const [activeTrip, setActiveTrip] = useState("current")
@@ -134,7 +135,9 @@ const Dashboard = () => {
         <View className="px-4 mb-6">
           <Text className="text-gray-800 text-lg font-bold mb-4">Quick Actions</Text>
           <View className="flex-row flex-wrap justify-between">
-            <TouchableOpacity className="w-[48%] bg-white/80 backdrop-blur-sm p-5 rounded-2xl shadow-lg border border-orange-100 mb-3">
+            <TouchableOpacity 
+            onPress={() => router.push("/(dashboard)/pages/trip")}
+            className="w-[48%] bg-white/80 backdrop-blur-sm p-5 rounded-2xl shadow-lg border border-orange-100 mb-3">
               <View className="items-center">
                 <View className="w-12 h-12 bg-gradient-to-br from-orange-400 to-red-400 rounded-2xl items-center justify-center mb-3 shadow-lg">
                   <Ionicons name="add-circle-outline" size={24} color="white" />
