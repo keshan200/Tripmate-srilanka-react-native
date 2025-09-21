@@ -1,11 +1,25 @@
-import { db } from "@/firebase";
+import { auth, db } from "@/firebase";
 import { Trip } from "@/types/Trip";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 
-export const tasksRef = collection(db, "trip")
+export const tripRef = collection(db, "trips")
 
 
-export const createTrip = async (trip: Trip) => {
-  const docRef = await addDoc(tasksRef, trip)
-  return docRef.id
-}
+export const createTrip = async (tripData: any) => {
+  if (!auth.currentUser) return;
+
+  await addDoc(collection(db, "trips"), {
+    ...tripData,
+    uid: auth.currentUser.uid,
+
+  });
+};
+
+
+export const getAllTrip = async (): Promise<Trip[]> => {
+  if (!auth.currentUser) return [];
+  
+  const q = query(tripRef, where("uid", "==", auth.currentUser.uid));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })) as Trip[];
+};
