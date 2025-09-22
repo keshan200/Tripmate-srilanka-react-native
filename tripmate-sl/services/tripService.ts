@@ -10,6 +10,7 @@ export const createTrip = async (tripData: any) => {
 
   await addDoc(collection(db, "trips"), {
     ...tripData,
+    status: "planned", 
     uid: auth.currentUser.uid,
 
   });

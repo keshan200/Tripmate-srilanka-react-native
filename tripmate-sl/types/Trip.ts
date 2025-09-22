@@ -6,7 +6,7 @@ export interface Trip  {
   endDate: Date
   destinations: string[]
   totalBudget?: number
-
+  status: "planned" | "ongoing" | "completed"
   createdAt: Date
 
 }

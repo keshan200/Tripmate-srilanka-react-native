@@ -178,7 +178,8 @@ useEffect(() => {
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity className="w-[48%] bg-white p-5 rounded-2xl shadow-lg border border-orange-100 mb-3">
+            <TouchableOpacity
+             onPress={() => router.push("/(dashboard)/pages/packingList")} className="w-[48%] bg-white p-5 rounded-2xl shadow-lg border border-orange-100 mb-3">
               <View className="items-center">
                 <View className="w-12 h-12 bg-blue-500 rounded-2xl items-center justify-center mb-3">
                   <Ionicons name="checkmark-circle-outline" size={24} color="white" />
@@ -188,7 +189,8 @@ useEffect(() => {
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity className="w-[48%] bg-white p-5 rounded-2xl shadow-lg border border-orange-100 mb-3">
+            <TouchableOpacity
+             onPress={() => router.push("/(dashboard)/pages/tripList")} className="w-[48%] bg-white p-5 rounded-2xl shadow-lg border border-orange-100 mb-3">
               <View className="items-center">
                 <View className="w-12 h-12 bg-purple-500 rounded-2xl items-center justify-center mb-3">
                   <Ionicons name="receipt-outline" size={24} color="white" />
