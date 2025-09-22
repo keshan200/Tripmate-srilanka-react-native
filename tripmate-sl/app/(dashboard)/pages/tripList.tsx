@@ -12,6 +12,8 @@ import React, { useEffect, useState } from "react"
 import { Ionicons } from '@expo/vector-icons'
 import { router } from "expo-router"
 import { getAllTrip } from "@/services/tripService"
+import TripModal from "@/components/TripDetailsModell"
+
 
 // Trip interface based on your provided type
 interface Trip {
@@ -28,6 +30,9 @@ interface Trip {
 const TripList = () => {
   const [trips, setTrips] = useState<Trip[]>([])
   const [loading, setLoading] = useState(true)
+  const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null)
+  const [modalVisible, setModalVisible] = useState(false)
+  const [editMode, setEditMode] = useState(false)
 
   useEffect(() => {
     const fetchTrips = async () => {
@@ -43,6 +48,39 @@ const TripList = () => {
 
     fetchTrips()
   }, [])
+
+  // Modal functions
+  const openTripDetails = (trip: Trip) => {
+    setSelectedTrip(trip)
+    setEditMode(false)
+    setModalVisible(true)
+  }
+
+  const openEditTrip = (trip: Trip) => {
+    setSelectedTrip(trip)
+    setEditMode(true)
+    setModalVisible(true)
+  }
+
+  const closeModal = () => {
+    setModalVisible(false)
+    setSelectedTrip(null)
+    setEditMode(false)
+  }
+
+  const handleSaveTrip = (updatedTrip: Trip) => {
+    // Update the trip in your trips array
+    setTrips(prevTrips => 
+      prevTrips.map(trip => 
+        trip.id === updatedTrip.id ? updatedTrip : trip
+      )
+    )
+    
+    // Call your API service here
+    // await updateTripService(updatedTrip)
+    
+    closeModal()
+  }
 
   const getCompletedTrips = () => trips.filter(trip => new Date(trip.endDate) < new Date()).length
   const getOngoingTrips = () => trips.filter(trip => 
@@ -265,20 +303,34 @@ const TripList = () => {
 
               return (
                 <TouchableOpacity 
-                  key={trip.id} 
+                  key={trip.id}
+                  onPress={() => openTripDetails(trip)} // Open modal on card tap
                   className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden mb-4"
                 >
                   <View className={`${headerColor} h-24 items-end justify-end p-4`}>
-                    <View className={`${statusColor} px-3 py-1 rounded-full`}>
-                      <Text className={`${statusText} text-xs font-bold`}>
-                        {status.charAt(0).toUpperCase() + status.slice(1)}
-                      </Text>
+                    <View className="flex-row items-center space-x-2">
+                      <TouchableOpacity
+                        onPress={(e) => {
+                          e.stopPropagation() // Prevent opening details modal
+                          openEditTrip(trip) // Open edit modal instead
+                        }}
+                        className="bg-white/20 w-8 h-8 rounded-full items-center justify-center"
+                      >
+                        <Ionicons name="pencil" size={14} color="white" />
+                      </TouchableOpacity>
+                      <View className={`${statusColor} px-3 py-1 rounded-full`}>
+                        <Text className={`${statusText} text-xs font-bold`}>
+                          {status.charAt(0).toUpperCase() + status.slice(1)}
+                        </Text>
+                      </View>
                     </View>
                   </View>
                   
                   <View className="p-5">
                     <View className="flex-row items-center justify-between mb-2">
-                      <Text className="text-gray-800 text-xl font-bold">{trip.title}</Text>
+                      <Text className="text-gray-800 text-xl font-bold flex-1 mr-2" numberOfLines={1}>
+                        {trip.title}
+                      </Text>
                       <TouchableOpacity>
                         <Ionicons 
                           name={index % 3 === 0 ? "heart" : "heart-outline"} 
@@ -294,7 +346,7 @@ const TripList = () => {
                     
                     <View className="flex-row items-center mb-3">
                       <Ionicons name="location-outline" size={16} color="#9CA3AF" />
-                      <Text className="text-gray-700 text-sm ml-1" numberOfLines={1}>
+                      <Text className="text-gray-700 text-sm ml-1 flex-1" numberOfLines={1}>
                         {trip.destinations.join(" • ")}
                       </Text>
                     </View>
@@ -310,6 +362,16 @@ const TripList = () => {
                         <Ionicons name="people-outline" size={16} color="#9CA3AF" />
                         <Text className="text-gray-700 text-sm ml-1">2 travelers</Text>
                       </View>
+                      <TouchableOpacity
+                        onPress={(e) => {
+                          e.stopPropagation() // Prevent opening details modal
+                          openTripDetails(trip) // Open details modal explicitly
+                        }}
+                        className="flex-row items-center"
+                      >
+                        <Text className="text-orange-600 text-sm font-medium mr-1">Details</Text>
+                        <Ionicons name="chevron-forward" size={14} color="#EA580C" />
+                      </TouchableOpacity>
                     </View>
                     
                     {/* Status-specific bottom section */}
@@ -386,6 +448,15 @@ const TripList = () => {
           </Text>
         </View>
       </ScrollView>
+
+      {/* TripModal Component - Add this at the end */}
+      <TripModal
+        visible={modalVisible}
+        trip={selectedTrip}
+        onClose={closeModal}
+        onSave={handleSaveTrip}
+        initialEditMode={editMode}
+      />
     </SafeAreaView>
   )
 }
