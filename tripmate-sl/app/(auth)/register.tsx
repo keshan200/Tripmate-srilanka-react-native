@@ -21,10 +21,30 @@ const Register = () => {
   const [password, setPassword] = useState<string>("")
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [agreeTerms, setAgreeTerms] = useState<boolean>(false)
-
+  const [error, setError] = useState<string>("")
   const [isLodingReg, setIsLoadingReg] = useState<boolean>(false)
 
   const handleRegister = async () => {
+      
+     setError("")
+
+ 
+    if (!email || !password) {
+      setError("Email and password are required.")
+      return
+    }
+  
+    const emailRegex = /\S+@\S+\.\S+/
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address.")
+      return
+    }
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.")
+      return
+    }
+
+
  
     if (isLodingReg) return
     setIsLoadingReg(true)
@@ -45,6 +65,27 @@ const Register = () => {
   
 
 
+  const handleEmailChange = (text: string) => {
+  setEmail(text);
+  if (text === "") {
+    setError("Email is required.");
+  } else if (!/\S+@\S+\.\S+/.test(text)) {
+    setError("Please enter a valid email.");
+  } else {
+    setError(""); // clear error if valid
+  }
+};
+
+const handlePasswordChange = (text: string) => {
+  setPassword(text);
+  if (text === "") {
+    setError("Password is required.");
+  } else if (text.length < 6) {
+    setError("Password must be at least 6 characters.");
+  } else {
+    setError("");
+  }
+};
 
 
   return (
@@ -95,6 +136,16 @@ const Register = () => {
               className="text-sm font-semibold text-gray-700 mb-3 ml-1">
                 Email Address
               </Text>
+
+
+                 {/* Error Message */}
+                           {error ? (
+                             <Text className="text-red-500  mb-4 ">
+                                  {error}
+                              </Text>
+                    ) : null}
+
+
               <View className="relative">
                 <View className="absolute left-4 top-4 z-10">
                   <Ionicons name="mail" size={20} color="#059669" />
@@ -104,7 +155,7 @@ const Register = () => {
                   className="bg-white border-2 border-emerald-200 rounded-2xl px-12 py-4 text-gray-900 shadow-sm focus:border-emerald-400"
                   placeholderTextColor="#9CA3AF"
                   value={email}
-                  onChangeText={setEmail}
+                  onChangeText={handleEmailChange}
                   keyboardType="email-address"
                   autoCapitalize="none"
                   autoComplete="email"
@@ -127,7 +178,7 @@ const Register = () => {
                   placeholderTextColor="#9CA3AF"
                   secureTextEntry={!showPassword}
                   value={password}
-                  onChangeText={setPassword}
+                  onChangeText={handlePasswordChange}
                   autoComplete="new-password"
                 />
                 <TouchableOpacity
@@ -179,12 +230,12 @@ const Register = () => {
 
             {/* Register Button */}
             <TouchableOpacity
-  disabled={isLodingReg || !agreeTerms} // disable when loading or terms not agreed
+  disabled={isLodingReg || !agreeTerms} 
   onPress={handleRegister}
-  className={`rounded-2xl py-4 shadow-lg mb-6 ${
+  className={`rounded-2xl py-4  mb-6 ${
     isLodingReg || !agreeTerms
       ? "bg-gray-300"
-      : "bg-gradient-to-r from-emerald-500 to-orange-500"
+      : "bg-green-600"
   }`}
 >
   <Text className="text-center text-white font-bold text-lg">
