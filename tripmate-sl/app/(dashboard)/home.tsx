@@ -12,6 +12,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { router } from "expo-router"
 import { Trip } from "@/types/Trip"
 import { getAllTrip } from "@/services/tripService"
+import BottomNav from "@/components/BottomNav"
 
 const Dashboard = () => {
   const [activeTrip, setActiveTrip] = useState("current")
@@ -39,7 +40,7 @@ useEffect(() => {
 
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1  bg-orange-50" >
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
       
       {/* Decorative Background Elements */}
@@ -314,6 +315,9 @@ useEffect(() => {
           </Text>
         </View>
       </ScrollView>
+
+
+        <BottomNav />
     </SafeAreaView>
   )
 }
