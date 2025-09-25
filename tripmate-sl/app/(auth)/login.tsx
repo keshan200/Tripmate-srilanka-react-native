@@ -7,7 +7,8 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Platform,
-  Alert
+  Alert,
+  ActivityIndicator
 } from "react-native"
 import React, { useState } from "react"
 import { useRouter } from "expo-router"
@@ -143,13 +144,24 @@ const Login = () => {
 
             {/* Login Button */}
             <TouchableOpacity
-              className="bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl py-4 shadow-lg mb-6"
-              onPress={handleLogin}
-            >
-              <Text className="text-center text-white font-bold text-lg">
-                🚀 Start Your Journey
-              </Text>
-            </TouchableOpacity>
+  className={`rounded-2xl py-4 shadow-lg mb-6 ${isLoading ? "bg-orange-300" : "bg-orange-500"}`}
+  onPress={handleLogin}
+  disabled={isLoading}
+>
+  {isLoading ? (
+    <View className="flex-row justify-center items-center">
+      <ActivityIndicator size="small" color="#fff" />
+      <Text className="text-center text-white font-bold text-lg ml-2">
+        Logging in...
+      </Text>
+    </View>
+  ) : (
+    <Text className="text-center text-white font-bold text-lg">
+      🚀 Start Your Journey
+    </Text>
+  )}
+</TouchableOpacity>
+
 
             {/* Divider */}
             <View className="flex-row items-center mb-6">
@@ -161,7 +173,7 @@ const Login = () => {
             </View>
 
             {/* Social Login Buttons */}
-            <View className="flex-row space-x-3 mb-4">
+            <View className="flex-row space-x-6 mb-4">
               <TouchableOpacity className="flex-1 bg-white border-2 border-red-200 rounded-xl py-3 flex-row items-center justify-center shadow-sm">
                 <Ionicons name="logo-google" size={18} color="#EA4335" />
                 <Text className="text-gray-700 font-semibold ml-2 text-sm">Google</Text>
