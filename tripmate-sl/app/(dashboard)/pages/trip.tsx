@@ -62,7 +62,8 @@ const NewTrip = () => {
     endDate,
     destinations,
     totalBudget: budgetNumber,
-    createdAt: new Date()
+    createdAt: new Date(),
+    status: "planned"
   };
 
   try {

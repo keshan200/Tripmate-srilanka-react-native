@@ -21,24 +21,72 @@ const Login = () => {
   const [password, setPassword] = useState<string>("")
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [showPassword, setShowPassword] = useState<boolean>(false)
+  const [error, setError] = useState<string>("")
 
-  const handleLogin = async () => {
+
+
+    const handleLogin = async () => {
+   
+    setError("")
+
+ 
+    if (!email || !password) {
+      setError("Email and password are required.")
+      return
+    }
+  
+    const emailRegex = /\S+@\S+\.\S+/
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address.")
+      return
+    }
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.")
+      return
+    }
+
     if (isLoading) return
     setIsLoading(true)
     await login(email, password)
       .then((res) => {
         console.log(res)
         router.push("/home")
-
       })
       .catch((err) => {
         console.error(err)
-        Alert.alert("Login failed", "Something went wrong")
+        setError("Invalid email or password.")
       })
       .finally(() => {
         setIsLoading(false)
       })
   }
+
+
+
+
+
+  const handleEmailChange = (text: string) => {
+  setEmail(text);
+  if (text === "") {
+    setError("Email is required.");
+  } else if (!/\S+@\S+\.\S+/.test(text)) {
+    setError("Please enter a valid email.");
+  } else {
+    setError(""); // clear error if valid
+  }
+};
+
+const handlePasswordChange = (text: string) => {
+  setPassword(text);
+  if (text === "") {
+    setError("Password is required.");
+  } else if (text.length < 6) {
+    setError("Password must be at least 6 characters.");
+  } else {
+    setError("");
+  }
+};
+
 
   return (
     <KeyboardAvoidingView 
@@ -85,6 +133,15 @@ const Login = () => {
               <Text className="text-sm font-semibold text-gray-700 mb-3 ml-1">
                 Email Address
               </Text>
+
+               {/* Error Message */}
+              {error ? (
+                <Text className="text-red-500  mb-4 ">
+                     {error}
+                 </Text>
+              ) : null}
+
+
               <View className="relative">
                 <View className="absolute left-4 top-4 z-10">
                   <Ionicons name="mail" size={20} color="#EA580C" />
@@ -94,9 +151,10 @@ const Login = () => {
                   className="bg-white border-2 border-orange-200 rounded-2xl px-12 py-4 text-gray-900 shadow-sm focus:border-orange-400"
                   placeholderTextColor="#9CA3AF"
                   value={email} 
-                  onChangeText={setEmail}
+                  onChangeText={handleEmailChange}
                   keyboardType="email-address"
                   autoCapitalize="none"
+                
                   autoComplete="email"
                 />
               </View>
@@ -117,7 +175,7 @@ const Login = () => {
                   placeholderTextColor="#9CA3AF"
                   secureTextEntry={!showPassword}
                   value={password}
-                  onChangeText={setPassword}
+                  onChangeText={handlePasswordChange}
                   autoComplete="password"
                 />
                 <TouchableOpacity
